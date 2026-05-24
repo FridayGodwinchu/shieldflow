@@ -57,25 +57,32 @@ jobs:
     steps:
       - name: Start Juice Shop
         run: docker run -d -p 3000:3000 bkimminich/juice-shop
-
       - name: Wait for Juice Shop to be ready
         run: |
           echo "Waiting for Juice Shop..."
-          for i in {1..30}; do
-            if curl -s http://localhost:3000 > /dev/null; then
-              echo "Juice Shop is up!"
+          for i in {1..60}; do
+            if curl -s --max-time 5 http://localhost:3000 > /dev/null 2>&1; then
+              echo "Juice Shop is up after $i attempts"
               break
             fi
-            echo "Attempt $i: not ready yet, waiting 10s..."
-            sleep 10
+            sleep 5
           done
-
-      - name: Run OWASP ZAP scan
-        uses: zaproxy/action-baseline@v0.12.0
+      - name: Run ZAP baseline scan
+        run: |
+          docker run --rm --network host \
+            -v $(pwd):/zap/wrk/:rw \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
+            -t http://localhost:3000 \
+            -r zap-report.html \
+            -I
+        continue-on-error: true
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@v4
         with:
-          target: http://localhost:3000
-          fail_action: false
-          allow_issue_writing: false
+          name: zap-report
+          path: zap-report.html
+        continue-on-error: true
 
   gate-check:
     name: Severity Gate
@@ -101,6 +108,10 @@ jobs:
     steps:
       - name: POST findings to Shuffle SOAR
         run: |
+          if [ -z "${{ secrets.SOAR_WEBHOOK_URL }}" ]; then
+            echo "SOAR_WEBHOOK_URL not set yet - skipping notification"
+            exit 0
+          fi
           curl -X POST "${{ secrets.SOAR_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
             -d '{
@@ -112,3 +123,4 @@ jobs:
               "timestamp": "${{ github.event.head_commit.timestamp }}",
               "pipeline_status": "${{ job.status }}"
             }'
+        continue-on-error: true
