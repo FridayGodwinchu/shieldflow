@@ -50,7 +50,6 @@ jobs:
         with:
           sarif_file: trivy-results.sarif
         continue-on-error: true
-
  dast-zap:
     name: DAST - OWASP ZAP
     runs-on: ubuntu-latest
@@ -76,7 +75,6 @@ jobs:
           target: http://localhost:3000
           fail_action: false
           allow_issue_writing: false
-
   gate-check:
     name: Severity Gate
     runs-on: ubuntu-latest
