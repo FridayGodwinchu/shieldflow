@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ShieldFlow Security Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; padding: 20px; }
+    h1 { color: #58a6ff; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin: 20px 0; }
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; text-align: center; }
+    .card .number { font-size: 32px; font-weight: bold; margin: 8px 0; }
+    .card .label { font-size: 13px; color: #8b949e; }
+    .critical { color: #f85149; }
+    .high { color: #e3b341; }
+    .medium { color: #58a6ff; }
+    .low { color: #3fb950; }
+    .section { margin: 30px 0 10px; font-size: 13px; font-weight: bold; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+    .bar-label { width: 120px; font-size: 13px; }
+    .bar-wrap { flex: 1; background: #21262d; border-radius: 4px; height: 8px; }
+    .bar { height: 8px; border-radius: 4px; }
+    .bar-count { width: 30px; text-align: right; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; padding: 8px; border-bottom: 1px solid #30363d; color: #8b949e; }
+    td { padding: 8px; border-bottom: 1px solid #21262d; }
+    .badge { padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+    .badge.critical { background: #3d1a1a; color: #f85149; }
+    .badge.high { background: #3d2e0a; color: #e3b341; }
+    .badge.medium { background: #0d2135; color: #58a6ff; }
+    .badge.low { background: #0d2318; color: #3fb950; }
+    .badge.open { background: #3d1a1a; color: #f85149; }
+    .badge.fixed { background: #0d2318; color: #3fb950; }
+    .mttt { display: flex; align-items: center; gap: 24px; background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin: 10px 0; }
+    .mttt-box { text-align: center; }
+    .mttt-num { font-size: 36px; font-weight: bold; }
+    .mttt-lbl { font-size: 12px; color: #8b949e; }
+    .arrow { font-size: 28px; color: #30363d; }
+  </style>
+</head>
+<body>
 
+<h1>ShieldFlow Security Dashboard</h1>
+
+<div class="grid">
+  <div class="card"><div class="number" style="color:#c9d1d9">47</div><div class="label">Total Findings</div></div>
+  <div class="card"><div class="number critical">3</div><div class="label">Critical</div></div>
+  <div class="card"><div class="number high">11</div><div class="label">High</div></div>
+  <div class="card"><div class="number" style="color:#58a6ff">14</div><div class="label">SOAR Cases</div></div>
+  <div class="card"><div class="number low">4m</div><div class="label">Avg MTTT</div></div>
+</div>
+
+<div class="section">Findings by Severity</div>
+<div class="bar-row"><span class="bar-label critical">Critical</span><div class="bar-wrap"><div class="bar" style="width:6%;background:#f85149"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label high">High</span><div class="bar-wrap"><div class="bar" style="width:23%;background:#e3b341"></div></div><span class="bar-count">11</span></div>
+<div class="bar-row"><span class="bar-label medium">Medium</span><div class="bar-wrap"><div class="bar" style="width:55%;background:#58a6ff"></div></div><span class="bar-count">26</span></div>
+<div class="bar-row"><span class="bar-label low">Low</span><div class="bar-wrap"><div class="bar" style="width:15%;background:#3fb950"></div></div><span class="bar-count">7</span></div>
+
+<div class="section">Findings by Scanner</div>
+<div class="bar-row"><span class="bar-label">DAST - ZAP</span><div class="bar-wrap"><div class="bar" style="width:40%;background:#8957e5"></div></div><span class="bar-count">19</span></div>
+<div class="bar-row"><span class="bar-label">SAST - Semgrep</span><div class="bar-wrap"><div class="bar" style="width:25%;background:#8957e5"></div></div><span class="bar-count">12</span></div>
+<div class="bar-row"><span class="bar-label">SCA - Trivy</span><div class="bar-wrap"><div class="bar" style="width:21%;background:#8957e5"></div></div><span class="bar-count">10</span></div>
+<div class="bar-row"><span class="bar-label">Secrets</span><div class="bar-wrap"><div class="bar" style="width:13%;background:#8957e5"></div></div><span class="bar-count">6</span></div>
+
+<div class="section">MTTT — Before vs After Automation</div>
+<div class="mttt">
+  <div class="mttt-box"><div class="mttt-num critical">2h 15m</div><div class="mttt-lbl">Manual review (before)</div></div>
+  <div class="arrow">→</div>
+  <div class="mttt-box"><div class="mttt-num low">4m</div><div class="mttt-lbl">Automated triage (after)</div></div>
+  <div class="arrow">→</div>
+  <div class="mttt-box"><div class="mttt-num" style="color:#58a6ff">97%</div><div class="mttt-lbl">Reduction</div></div>
+</div>
+
+<div class="section">Top Open Findings</div>
+<table>
+  <thead>
+    <tr><th>Finding</th><th>Scanner</th><th>Severity</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>SQL injection in login form</td><td>ZAP / Semgrep</td><td><span class="badge critical">Critical</span></td><td><span class="badge open">Open</span></td></tr>
+    <tr><td>CVE-2023-44487 HTTP/2 DoS</td><td>Trivy</td><td><span class="badge critical">Critical</span></td><td><span class="badge open">Open</span></td></tr>
+    <tr><td>AWS key in commit history</td><td>Gitleaks</td><td><span class="badge critical">Critical</span></td><td><span class="badge fixed">Rotated</span></td></tr>
+    <tr><td>Reflected XSS in search</td><td>ZAP</td><td><span class="badge high">High</span></td><td><span class="badge open">Open</span></td></tr>
+    <tr><td>Broken object level auth</td><td>ZAP</td><td><span class="badge high">High</span></td><td><span class="badge open">Open</span></td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>
